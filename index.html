@@ -28,7 +28,7 @@
       linear-gradient(180deg,#fbf4e5 0,#f5ead7 100%);min-height:100vh}
     .top{background:linear-gradient(105deg,var(--wine-dark),var(--wine) 58%,#861b1f);border-bottom:2px solid var(--gold);box-shadow:0 8px 28px #38070b26;color:#fff8e8}
     .mark{background:linear-gradient(145deg,#f4dda1,#b37b19);color:var(--wine-dark);border:1px solid #ffe8a9;box-shadow:inset 0 1px 0 #fff8}
-    .brand small{color:#e9d5aa}.live{background:#fff1c51c;color:#f4dfb2;border:1px solid #e4bd5b55}.live i{background:#e5c462;box-shadow:0 0 0 4px #f3d67620}
+    .brand small{color:#e9d5aa}.live{background:#fff1c51c;color:#f4dfb2;border:1px solid #e4bd5b55}.live i{background:#e5c462;box-shadow:0 0 0 4px #f3d67620}.live.syncing i{animation:pulse 1s infinite}.live.offline i{background:#e57662}.live.online i{background:#78c88d}@keyframes pulse{50%{opacity:.35}}
     .primary{background:linear-gradient(145deg,#edcf77,#bd8522);color:#3f0a0d;box-shadow:0 5px 16px #34080b38;border:1px solid #f5df9b}.primary:hover{background:linear-gradient(145deg,#f3da8b,#cc9631)}
     .avatar{border-color:#dcb657;background:#fff6dc;color:var(--wine)}
     .intro h1,.heading h2,.month-toolbar h2{color:var(--wine-dark)}.eyebrow,.label{color:var(--wine)}
@@ -54,13 +54,14 @@
     .modal select,.modal input[type=date],.modal input[type=text],.temp-input{border-color:#d7bf91;background:#fffdf7}.note{background:#f1dfb8;color:var(--wine)}
     .toast{background:linear-gradient(105deg,#4b090d,#791519);border:1px solid #c99a35}
     .settings-note{margin:-7px 0 4px;color:var(--muted);font-size:10px;line-height:1.5}
+    .pin-backdrop{z-index:80;background:linear-gradient(135deg,#210306e8,#5b0d12e8)}.pin-mark{width:52px;height:52px;border-radius:14px;display:grid;place-items:center;margin-bottom:19px;background:linear-gradient(145deg,#f1d98b,#b67c1b);color:#43090d;font:700 23px Georgia;box-shadow:0 8px 25px #3c090d35}.pin-error{min-height:16px;margin:0!important;color:var(--red)!important;font-weight:700}.pin-help{margin:0!important;font-size:10px!important}.pin-input{height:48px!important;text-align:center;font:700 22px Georgia!important;letter-spacing:.22em}
     @media(max-width:700px){.top .primary{padding:0 11px;font-size:11px}.device{background:#fffaf1}.room-edit{width:34px;height:34px}.month-actions{flex-wrap:wrap}.month-actions>.primary{width:100%}}
   </style>
 </head>
 <body>
   <header class="top">
     <div class="brand"><span class="mark">°</span><span><strong>Kühlblick</strong><small>Restaurant · Temperaturkontrolle</small></span></div>
-    <div class="actions"><span class="live"><i></i>Live-Übersicht</span><button class="primary" id="capture">＋ Temperatur erfassen</button><button class="avatar">SH</button></div>
+    <div class="actions"><span class="live syncing" id="syncPill"><i></i><span id="syncStatus">Verbindung wird hergestellt</span></span><button class="primary" id="capture">＋ Temperatur erfassen</button><button class="avatar">SH</button></div>
   </header>
   <main class="page">
     <section class="intro">
@@ -87,11 +88,12 @@
         <div class="month-empty-note">Tipp: Klicke auf ein Feld, um einen Wert für das Gerät und den jeweiligen Tag einzutragen.</div>
       </div>
     </section>
-    <footer><span>● Daten werden nur auf diesem Gerät gespeichert</span><span>Kühlblick · HACCP-Tageskontrolle</span></footer>
+    <footer><span>● Zentral gespeichert und auf allen Geräten synchronisiert</span><span>Kühlblick · HACCP-Tageskontrolle</span></footer>
   </main>
   <div class="backdrop" id="backdrop"><section class="modal" role="dialog" aria-modal="true"><button class="close" id="close" aria-label="Dialog schließen">×</button><p class="eyebrow">NEUE MESSUNG</p><h2>Temperatur erfassen</h2><p>Messwert auswählen, prüfen und direkt dokumentieren.</p><form id="form"><label>Datum<input type="date" id="entryDate" required></label><label>Kühlgerät<select id="select"></select></label><label>Gemessene Temperatur<div class="temp-input"><input id="temperature" inputmode="decimal" required aria-label="Gemessene Temperatur"><span>°C</span></div></label><div class="note" id="rangeNote"></div><button class="primary save" type="submit">Messung speichern</button></form></section></div>
   <div class="backdrop" id="roomBackdrop"><section class="modal" role="dialog" aria-modal="true" aria-labelledby="roomDialogTitle"><button class="close" id="roomClose" aria-label="Dialog schließen">×</button><p class="eyebrow">BEZEICHNUNGEN</p><h2 id="roomDialogTitle">Kühlhäuser benennen</h2><p>Die neuen Namen erscheinen in der Übersicht, den Filtern und bei allen Kühlgeräten.</p><form id="roomForm"><label>Erstes Kühlhaus<input type="text" id="beerRoomInput" maxlength="40" required></label><label>Zweites Kühlhaus<input type="text" id="vegRoomInput" maxlength="40" required></label><p class="settings-note">Die Zuordnung der vorhandenen Kühlschränke bleibt dabei unverändert.</p><button class="primary save" type="submit">Namen speichern</button></form></section></div>
   <div class="backdrop" id="deviceBackdrop"><section class="modal" role="dialog" aria-modal="true" aria-labelledby="deviceDialogTitle"><button class="close" id="deviceClose" aria-label="Dialog schließen">×</button><p class="eyebrow">KÜHLGERÄT</p><h2 id="deviceDialogTitle">Gerät benennen</h2><p id="deviceNameMeta">Der neue Name wird überall in der Anwendung übernommen.</p><form id="deviceNameForm"><label>Gerätename<input type="text" id="deviceNameInput" maxlength="50" required></label><p class="settings-note">Gerätecode, Kühlhaus-Zuordnung und Messwerte bleiben unverändert.</p><button class="primary save" type="submit">Gerätenamen speichern</button></form></section></div>
+  <div class="backdrop open pin-backdrop" id="pinBackdrop"><section class="modal" role="dialog" aria-modal="true" aria-labelledby="pinDialogTitle"><div class="pin-mark">°</div><p class="eyebrow">ESTEBAN · TEMPERATURLISTE</p><h2 id="pinDialogTitle">Restaurant-PIN eingeben</h2><p>Mit dem gemeinsamen PIN werden auf allen Geräten dieselben Werte geladen und gespeichert.</p><form id="pinForm"><label>PIN<input class="pin-input" type="password" id="pinInput" inputmode="numeric" autocomplete="current-password" maxlength="12" required aria-describedby="pinError"></label><p class="pin-error" id="pinError" aria-live="polite"></p><button class="primary save" type="submit">Temperaturliste öffnen</button><p class="pin-help">Der PIN wird ausschließlich auf diesem Gerät gespeichert.</p></form></section></div>
   <div class="toast" id="toast">✓ Temperatur wurde gespeichert.</div>
   <script>
     const defaults=[
@@ -106,17 +108,45 @@
       {id:9,room:"Gemüsekühlhaus",name:"Mise en Place",code:"GK-04",value:4.8,min:3,max:7,checked:false,time:"Gestern",h:[4.5,4.7,4.6,4.9,4.8,4.8]},
       {id:10,room:"Gemüsekühlhaus",name:"Tagesvorrat",code:"GK-05",value:3.7,min:3,max:7,checked:false,time:"Gestern",h:[3.9,3.8,3.6,3.8,3.7,3.7]}
     ];
-    let devices;try{devices=JSON.parse(localStorage.getItem("kuehlblick-devices"))||defaults}catch(e){devices=defaults}
-    let monthLog;try{monthLog=JSON.parse(localStorage.getItem("kuehlblick-month-log"))||{}}catch(e){monthLog={}}
+    const API_URL=location.hostname==="localhost"||location.hostname==="127.0.0.1"?"http://localhost:4176/api/state":"https://kuehlblick-restaurant.saschahoehner.chatgpt.site/api/state";
+    const API_ACCESS="Bearer 78JtJKsXHH87Nkmok41u0WzYAg0RMEIrtbpR1IRKN-8";
+    let devices=defaults.map(d=>({...d,h:[...d.h]})),monthLog={},syncPin=localStorage.getItem("kuehlblick-sync-pin")||"",refreshTimer;
     const roomDefaults={beer:"Bierkühlhaus",veg:"Gemüsekühlhaus"};
-    let roomNames;try{roomNames={...roomDefaults,...JSON.parse(localStorage.getItem("kuehlblick-room-names"))}}catch(e){roomNames={...roomDefaults}}
+    let roomNames={...roomDefaults};
     const localKey=d=>{const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,"0"),day=String(d.getDate()).padStart(2,"0");return `${y}-${m}-${day}`};
     const todayKey=localKey(new Date());
     let room="Alle",selected=1,selectedNameDevice=1,selectedMonth=todayKey.slice(0,7),activeView="dashboard";
     const $=s=>document.querySelector(s),status=d=>d.value>d.max+1||d.value<d.min-1?"critical":d.value>d.max||d.value<d.min?"warning":"ok";
     const roomKey=r=>r==="Gemüsekühlhaus"?"veg":"beer",displayRoom=r=>roomNames[roomKey(r)],esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
     const names={ok:"In Ordnung",warning:"Zu warm",critical:"Kritisch"};
-    function persist(){localStorage.setItem("kuehlblick-devices",JSON.stringify(devices));localStorage.setItem("kuehlblick-month-log",JSON.stringify(monthLog));localStorage.setItem("kuehlblick-room-names",JSON.stringify(roomNames))}
+    function setSync(state,text){$("#syncPill").className=`live ${state}`;$("#syncStatus").textContent=text}
+    function showToast(text){$("#toast").textContent=text;$("#toast").classList.add("show");setTimeout(()=>$("#toast").classList.remove("show"),2600)}
+    function applyCloud(data){
+      devices=data.devices;monthLog=data.monthLog||{};roomNames={...roomDefaults,...data.roomNames};
+      localStorage.setItem("kuehlblick-devices",JSON.stringify(devices));localStorage.setItem("kuehlblick-month-log",JSON.stringify(monthLog));localStorage.setItem("kuehlblick-room-names",JSON.stringify(roomNames));
+      renderDeviceSelect();render();renderMonth();
+    }
+    async function requestCloud(method="GET",body){
+      setSync("syncing","Wird synchronisiert …");
+      const response=await fetch(API_URL,{method,headers:{"Content-Type":"application/json","X-Esteban-Pin":syncPin,"OAI-Sites-Authorization":API_ACCESS},body:body?JSON.stringify(body):undefined,cache:"no-store"});
+      const data=await response.json().catch(()=>({}));
+      if(!response.ok){const error=new Error(data.error||"SYNC_FAILED");error.status=response.status;throw error}
+      applyCloud(data);setSync("online","Zentral gespeichert");return data;
+    }
+    async function saveCloud(body){
+      try{return await requestCloud("POST",body)}
+      catch(error){setSync("offline","Speichern fehlgeschlagen");showToast("Speichern fehlgeschlagen – bitte Verbindung prüfen.");return null}
+    }
+    async function unlock(pin){
+      syncPin=pin.trim();$("#pinError").textContent="";$("#pinForm button").disabled=true;
+      try{
+        await requestCloud();localStorage.setItem("kuehlblick-sync-pin",syncPin);$("#pinBackdrop").classList.remove("open");
+        clearInterval(refreshTimer);refreshTimer=setInterval(()=>requestCloud().catch(()=>setSync("offline","Verbindung unterbrochen")),20000);
+      }catch(error){
+        setSync("offline","Nicht verbunden");localStorage.removeItem("kuehlblick-sync-pin");
+        $("#pinError").textContent=error.status===401?"Der PIN ist nicht korrekt.":"Verbindung derzeit nicht möglich.";$("#pinInput").select();
+      }finally{$("#pinForm button").disabled=false}
+    }
     function renderRoomNames(){
       $("#beerRoomName").textContent=roomNames.beer.toUpperCase();$("#vegRoomName").textContent=roomNames.veg.toUpperCase();
       $("#beerInitial").textContent=roomNames.beer.trim().charAt(0).toUpperCase()||"B";$("#vegInitial").textContent=roomNames.veg.trim().charAt(0).toUpperCase()||"G";
@@ -146,21 +176,24 @@
     $("#search").addEventListener("input",render);
     document.querySelectorAll("[data-room]").forEach(b=>b.onclick=()=>{room=b.dataset.room;document.querySelectorAll("[data-room]").forEach(x=>x.classList.toggle("active",x===b));render()});
     document.querySelectorAll("[data-view]").forEach(b=>b.onclick=()=>{activeView=b.dataset.view;document.querySelectorAll("[data-view]").forEach(x=>x.classList.toggle("active",x===b));$("#dashboardView").classList.toggle("hidden",activeView!=="dashboard");$("#monthView").classList.toggle("hidden",activeView!=="month");if(activeView==="month")renderMonth()});
-    $("#devices").onclick=e=>{const edit=e.target.closest("[data-edit-device]"),add=e.target.closest("[data-add]"),check=e.target.closest("[data-check]");if(edit){openDeviceNameModal(+edit.dataset.editDevice);return}if(add)openModal(+add.dataset.add);if(check){const d=devices.find(x=>x.id===+check.dataset.check);d.checked=!d.checked;if(d.checked){d.time="Soeben";monthLog[todayKey]??={};monthLog[todayKey][d.id]={value:d.value,time:new Date().toLocaleTimeString("de-DE",{hour:"2-digit",minute:"2-digit"})}}persist();render();renderMonth()}};
+    $("#devices").onclick=async e=>{const edit=e.target.closest("[data-edit-device]"),add=e.target.closest("[data-add]"),check=e.target.closest("[data-check]");if(edit){openDeviceNameModal(+edit.dataset.editDevice);return}if(add)openModal(+add.dataset.add);if(check){const d=devices.find(x=>x.id===+check.dataset.check);await saveCloud({action:"toggle-check",id:d.id,checked:!d.checked})}};
     $("#monthRows").onclick=e=>{const cell=e.target.closest("[data-log-device]");if(cell)openModal(+cell.dataset.logDevice,cell.dataset.logDate)};
     function moveMonth(offset){const [y,m]=selectedMonth.split("-").map(Number),d=new Date(y,m-1+offset,1);selectedMonth=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}`;renderMonth()}
     $("#prevMonth").onclick=()=>moveMonth(-1);$("#nextMonth").onclick=()=>moveMonth(1);
-    $("#takeToday").onclick=()=>{monthLog[todayKey]??={};devices.filter(d=>d.checked).forEach(d=>monthLog[todayKey][d.id]={value:d.value,time:"Übernommen"});persist();selectedMonth=todayKey.slice(0,7);renderMonth();$("#toast").textContent=`✓ ${Object.keys(monthLog[todayKey]).length} heutige Werte dokumentiert.`;$("#toast").classList.add("show");setTimeout(()=>$("#toast").classList.remove("show"),2500)};
+    $("#takeToday").onclick=async()=>{const saved=await saveCloud({action:"take-today"});if(saved){selectedMonth=todayKey.slice(0,7);renderMonth();showToast(`✓ ${Object.keys(monthLog[todayKey]||{}).length} heutige Werte dokumentiert.`)}};
     $("#capture").onclick=()=>openModal(1);$("#close").onclick=()=>$("#backdrop").classList.remove("open");$("#backdrop").onclick=e=>{if(e.target.id==="backdrop")$("#backdrop").classList.remove("open")};
     document.querySelectorAll("[data-edit-room]").forEach(b=>b.onclick=()=>{$("#beerRoomInput").value=roomNames.beer;$("#vegRoomInput").value=roomNames.veg;$("#roomBackdrop").classList.add("open");$(`#${b.dataset.editRoom}RoomInput`).focus()});
     $("#roomClose").onclick=()=>$("#roomBackdrop").classList.remove("open");$("#roomBackdrop").onclick=e=>{if(e.target.id==="roomBackdrop")$("#roomBackdrop").classList.remove("open")};
-    $("#roomForm").onsubmit=e=>{e.preventDefault();const beer=$("#beerRoomInput").value.trim(),veg=$("#vegRoomInput").value.trim();if(!beer||!veg)return;roomNames={beer,veg};persist();render();$("#roomBackdrop").classList.remove("open");$("#toast").textContent="✓ Kühlhaus-Namen wurden gespeichert.";$("#toast").classList.add("show");setTimeout(()=>$("#toast").classList.remove("show"),2500)};
+    $("#roomForm").onsubmit=async e=>{e.preventDefault();const beer=$("#beerRoomInput").value.trim(),veg=$("#vegRoomInput").value.trim();if(!beer||!veg)return;if(await saveCloud({action:"rename-rooms",beer,veg})){$("#roomBackdrop").classList.remove("open");showToast("✓ Kühlhaus-Namen wurden zentral gespeichert.")}};
     $("#deviceClose").onclick=()=>$("#deviceBackdrop").classList.remove("open");$("#deviceBackdrop").onclick=e=>{if(e.target.id==="deviceBackdrop")$("#deviceBackdrop").classList.remove("open")};
-    $("#deviceNameForm").onsubmit=e=>{e.preventDefault();const value=$("#deviceNameInput").value.trim(),d=devices.find(x=>x.id===selectedNameDevice);if(!value||!d)return;d.name=value;persist();render();renderDeviceSelect();$("#deviceBackdrop").classList.remove("open");$("#toast").textContent="✓ Gerätename wurde gespeichert.";$("#toast").classList.add("show");setTimeout(()=>$("#toast").classList.remove("show"),2500)};
+    $("#deviceNameForm").onsubmit=async e=>{e.preventDefault();const value=$("#deviceNameInput").value.trim(),d=devices.find(x=>x.id===selectedNameDevice);if(!value||!d)return;if(await saveCloud({action:"rename-device",id:d.id,name:value})){$("#deviceBackdrop").classList.remove("open");showToast("✓ Gerätename wurde zentral gespeichert.")}};
     document.addEventListener("keydown",e=>{if(e.key==="Escape")["backdrop","roomBackdrop","deviceBackdrop"].forEach(id=>$("#"+id).classList.remove("open"))});
     $("#select").onchange=e=>openModal(+e.target.value,$("#entryDate").value||todayKey);
-    $("#form").onsubmit=e=>{e.preventDefault();const v=Number($("#temperature").value.replace(",",".")),date=$("#entryDate").value;if(!Number.isFinite(v)||v< -10||v>30||!date)return;monthLog[date]??={};monthLog[date][selected]={value:v,time:new Date().toLocaleTimeString("de-DE",{hour:"2-digit",minute:"2-digit"})};const d=devices.find(x=>x.id===selected);if(date===todayKey){d.value=v;d.checked=true;d.time="Soeben";d.h=[...d.h.slice(-5),v]}persist();render();renderMonth();$("#backdrop").classList.remove("open");$("#toast").textContent="✓ Temperatur wurde gespeichert.";$("#toast").classList.add("show");setTimeout(()=>$("#toast").classList.remove("show"),2500)};
+    $("#form").onsubmit=async e=>{e.preventDefault();const v=Number($("#temperature").value.replace(",",".")),date=$("#entryDate").value;if(!Number.isFinite(v)||v< -10||v>30||!date)return;if(await saveCloud({action:"save-measurement",id:selected,value:v,date})){$("#backdrop").classList.remove("open");showToast("✓ Temperatur wurde zentral gespeichert.")}};
+    $("#pinForm").onsubmit=e=>{e.preventDefault();unlock($("#pinInput").value)};
+    document.addEventListener("visibilitychange",()=>{if(!document.hidden&&syncPin&&!$("#pinBackdrop").classList.contains("open"))requestCloud().catch(()=>setSync("offline","Verbindung unterbrochen"))});
     render();renderMonth();
+    if(syncPin){$("#pinInput").value=syncPin;unlock(syncPin)}else{$("#pinInput").focus();setSync("offline","PIN erforderlich")}
   </script>
 </body>
 </html>
