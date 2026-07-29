@@ -54,6 +54,8 @@
     footer{color:#82695d}.backdrop{background:#210306b8}.modal{background:#fff8e9;border:1px solid #d1aa58}.close{background:#ead7b2;color:var(--wine)}
     .modal select,.modal input[type=date],.modal input[type=text],.temp-input{border-color:#d7bf91;background:#fffdf7}.note{background:#f1dfb8;color:var(--wine)}
     .toast{background:linear-gradient(105deg,#4b090d,#791519);border:1px solid #c99a35}
+    .sync-state{display:inline-flex;align-items:center;gap:6px;font-weight:700}.sync-state:before{content:"";width:7px;height:7px;border-radius:50%;background:#a97724}.sync-state.online:before{background:#28704d}.sync-state.busy:before{background:#c99a35;animation:pulse 1s infinite}.sync-state.offline:before{background:#b4312f}@keyframes pulse{50%{opacity:.35}}
+    .pin-actions{display:grid;gap:9px}.secondary{height:40px;border:1px solid #d7bf91;border-radius:9px;background:#fffaf0;color:var(--wine);font-weight:800;font-size:11px}.secondary:hover{background:#f4dfaa}
     .settings-note{margin:-7px 0 4px;color:var(--muted);font-size:10px;line-height:1.5}
     @media(max-width:700px){.top .primary{padding:0 11px;font-size:11px}.device{background:#fffaf1}.room-edit{width:34px;height:34px}.month-actions{flex-wrap:wrap}.month-actions>.primary{width:100%}}
     @media print{
@@ -99,10 +101,11 @@
         <div class="archive-list" id="archiveList"></div>
       </div>
     </section>
-    <footer><span>● Daten werden nur auf diesem Gerät gespeichert</span><span>Restaurant Esteban · HACCP-Tageskontrolle</span></footer>
+    <footer><span class="sync-state" id="syncState">Online-Speicher wird verbunden …</span><span>Restaurant Esteban · HACCP-Tageskontrolle</span></footer>
   </main>
   <div class="backdrop" id="backdrop"><section class="modal" role="dialog" aria-modal="true"><button class="close" id="close" aria-label="Dialog schließen">×</button><p class="eyebrow">NEUE MESSUNG</p><h2>Temperatur erfassen</h2><p>Messwert auswählen, prüfen und direkt dokumentieren.</p><form id="form"><label>Datum<input type="date" id="entryDate" required></label><label>Kühlgerät<select id="select"></select></label><label>Gemessene Temperatur<div class="temp-input"><input id="temperature" inputmode="decimal" required aria-label="Gemessene Temperatur"><span>°C</span></div></label><div class="note" id="rangeNote"></div><button class="primary save" type="submit">Messung speichern</button></form></section></div>
   <div class="backdrop" id="deviceBackdrop"><section class="modal" role="dialog" aria-modal="true" aria-labelledby="deviceDialogTitle"><button class="close" id="deviceClose" aria-label="Dialog schließen">×</button><p class="eyebrow">KÜHLGERÄT</p><h2 id="deviceDialogTitle">Gerät benennen</h2><p id="deviceNameMeta">Der neue Name wird überall in der Anwendung übernommen.</p><form id="deviceNameForm"><label>Gerätename<input type="text" id="deviceNameInput" maxlength="50" required></label><p class="settings-note">Gerätecode, Gerätetyp und Messwerte bleiben unverändert.</p><button class="primary save" type="submit">Gerätenamen speichern</button></form></section></div>
+  <div class="backdrop" id="pinBackdrop"><section class="modal" role="dialog" aria-modal="true" aria-labelledby="pinDialogTitle"><button class="close" id="pinClose" aria-label="Dialog schließen">×</button><p class="eyebrow">GEMEINSAMER SPEICHER</p><h2 id="pinDialogTitle">PIN eingeben</h2><p>Mit derselben PIN werden die Einträge auf Laptop, Handy und Tablet gemeinsam gespeichert.</p><form id="pinForm"><label>Restaurant-PIN<input type="password" id="pinInput" inputmode="numeric" autocomplete="current-password" maxlength="12" required></label><div class="note" id="pinNote">Die PIN wird nur für diese Browsersitzung gespeichert.</div><div class="pin-actions"><button class="primary save" type="submit">Verbinden</button><button class="secondary" id="pinOffline" type="button">Vorläufig nur auf diesem Gerät</button></div></form></section></div>
   <div class="toast" id="toast">✓ Temperatur wurde gespeichert.</div>
   <script>
     const defaults=[
@@ -192,10 +195,11 @@
     $("#deviceClose").onclick=()=>$("#deviceBackdrop").classList.remove("open");$("#deviceBackdrop").onclick=e=>{if(e.target.id==="deviceBackdrop")$("#deviceBackdrop").classList.remove("open")};
     $("#deviceNameForm").onsubmit=e=>{e.preventDefault();const value=$("#deviceNameInput").value.trim(),d=devices.find(x=>x.id===selectedNameDevice);if(!value||!d)return;d.name=value;persist();render();renderDeviceSelect();$("#deviceBackdrop").classList.remove("open");$("#toast").textContent="✓ Gerätename wurde gespeichert.";$("#toast").classList.add("show");setTimeout(()=>$("#toast").classList.remove("show"),2500)};
     $("#archiveList").onclick=e=>{const open=e.target.closest("[data-open-archive]"),print=e.target.closest("[data-print-archive]"),monthKey=open?.dataset.openArchive||print?.dataset.printArchive;if(!monthKey)return;selectedMonth=monthKey;showView("month");if(print)requestAnimationFrame(()=>window.print())};
-    document.addEventListener("keydown",e=>{if(e.key==="Escape")["backdrop","deviceBackdrop"].forEach(id=>$("#"+id).classList.remove("open"))});
+    document.addEventListener("keydown",e=>{if(e.key==="Escape")["backdrop","deviceBackdrop","pinBackdrop"].forEach(id=>$("#"+id).classList.remove("open"))});
     $("#select").onchange=e=>openModal(+e.target.value,$("#entryDate").value||todayKey);
     $("#form").onsubmit=e=>{e.preventDefault();const v=Number($("#temperature").value.replace(",",".")),date=$("#entryDate").value;if(!Number.isFinite(v)||v< -40||v>30||!date)return;monthLog[date]??={};monthLog[date][selected]={value:v,time:new Date().toLocaleTimeString("de-DE",{hour:"2-digit",minute:"2-digit"})};const d=devices.find(x=>x.id===selected);if(date===todayKey){d.value=v;d.checked=true;d.time="Soeben";d.h=[...d.h.slice(-5),v]}persist();render();renderMonth();$("#backdrop").classList.remove("open");$("#toast").textContent="✓ Temperatur wurde gespeichert.";$("#toast").classList.add("show");setTimeout(()=>$("#toast").classList.remove("show"),2500)};
     render();renderMonth();renderArchive();updateEmailLink();
   </script>
+  <script src="sync.js"></script>
 </body>
 </html>
