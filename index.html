@@ -3,11 +3,11 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="theme-color" content="#164e38">
+  <meta name="theme-color" content="#5b0d12">
   <title>Kühlblick · Temperaturkontrolle</title>
   <meta name="description" content="Temperaturkontrolle für zwei Kühlhäuser und zehn Kühlgeräte.">
   <style>
-    :root{--ink:#17211c;--muted:#68746d;--line:#dfe5e1;--green:#24684b;--dark:#164e38;--soft:#eaf4ee;--amber:#c67b24;--red:#c4503f;--beer:#b98943;--veg:#62966b}
+    :root{--ink:#351915;--muted:#7b665b;--line:#d8c49b;--green:#28704d;--dark:#681116;--soft:#fbf2dc;--amber:#b8751e;--red:#b4312f;--beer:#b98424;--veg:#8f492d;--wine:#681116;--wine-dark:#35080b;--gold:#c99a35;--gold-light:#f1d88a;--cream:#fbf5e8}
     *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:#f6f7f5;color:var(--ink);font-family:Arial,Helvetica,sans-serif;-webkit-font-smoothing:antialiased}button,input,select{font:inherit}button{color:inherit;cursor:pointer}
     .top{height:76px;display:flex;align-items:center;justify-content:space-between;padding:0 42px;border-bottom:1px solid var(--line);background:#ffffffee;position:sticky;top:0;z-index:20;backdrop-filter:blur(12px)}
     .brand{display:flex;align-items:center;gap:12px}.mark{width:38px;height:38px;border-radius:11px;background:var(--dark);color:#fff;display:grid;place-items:center;font:700 27px Georgia}.brand strong{display:block;font:700 20px Georgia}.brand small{display:block;margin-top:4px;color:var(--muted);font-size:10px;letter-spacing:.08em;text-transform:uppercase}
@@ -23,6 +23,37 @@
     footer{display:flex;justify-content:space-between;color:#859089;font-size:9px;padding:18px 3px 0}.backdrop{position:fixed;inset:0;z-index:50;display:none;place-items:center;padding:20px;background:#111f187a;backdrop-filter:blur(4px)}.backdrop.open{display:grid}.modal{width:min(430px,100%);background:#fff;border-radius:17px;padding:30px;box-shadow:0 30px 80px #0003;position:relative}.close{position:absolute;right:18px;top:16px;border:0;background:#f1f3f1;width:32px;height:32px;border-radius:50%;font-size:21px}.modal h2{margin:0;font:700 27px Georgia}.modal>p{color:var(--muted);font-size:12px;margin:7px 0 23px}.modal form{display:grid;gap:17px}.modal label{font-size:11px;font-weight:800;display:grid;gap:7px}.modal select,.modal input[type=date],.temp-input{height:44px;border:1px solid #d9e0dc;border-radius:9px;background:#fafbfa;padding:0 12px}.temp-input{display:flex;align-items:center}.temp-input input{flex:1;border:0;outline:0;background:transparent;font:700 20px Georgia;width:100%}.note{padding:10px 12px;border-radius:8px;background:var(--soft);color:var(--dark);font-size:11px;font-weight:700}.save{width:100%;height:44px}.toast{position:fixed;left:50%;bottom:25px;transform:translateX(-50%);z-index:60;padding:12px 17px;color:#fff;background:#183e2e;border-radius:9px;font-size:12px;font-weight:700;display:none}.toast.show{display:block}
     @media(max-width:980px){.top{padding:0 24px}.page{padding:32px 24px}.overview{grid-template-columns:1fr 1fr}.status{grid-column:1/-1}.list-head{display:none}.device{grid-template-columns:1.8fr .7fr .7fr 1fr 30px}.range{display:none}}
     @media(max-width:700px){.top{height:66px;padding:0 16px}.brand small,.live,.avatar{display:none}.page{padding:25px 15px}.intro{align-items:flex-start;gap:18px}.intro h1{font-size:29px}.progress>div:last-child{display:none}.ring{width:50px;height:50px}.overview{grid-template-columns:1fr}.status{grid-column:auto;grid-template-columns:auto 1fr;padding:22px 18px}.counts{grid-column:1/-1;border-left:0;border-top:1px solid #dce5df;padding:14px 0 0;display:flex}.heading,.filters{align-items:stretch;flex-direction:column}.search{width:100%}.segments{width:100%}.segments button{flex:1}.list{border:0;background:transparent;box-shadow:none;display:grid;gap:10px}.device{padding:15px;border:1px solid var(--line);border-radius:12px;background:#fff;grid-template-columns:1fr auto auto;gap:13px}.name{grid-column:1/3}.temp{text-align:right}.bars{grid-column:1}.check{grid-column:2}.add{grid-column:3;grid-row:2}.month-toolbar{align-items:flex-start;flex-direction:column;padding:19px}.month-actions{width:100%;justify-content:space-between}.month-summary{grid-template-columns:1fr;padding:12px 19px}.month-stat{display:flex;align-items:center;justify-content:space-between}.month-stat strong{margin:0}.month-empty-note{padding:12px 19px}footer{flex-direction:column;gap:7px}}
+    body{background:
+      radial-gradient(circle at 8% 0%,#efd99f55 0,transparent 28%),
+      linear-gradient(180deg,#fbf4e5 0,#f5ead7 100%);min-height:100vh}
+    .top{background:linear-gradient(105deg,var(--wine-dark),var(--wine) 58%,#861b1f);border-bottom:2px solid var(--gold);box-shadow:0 8px 28px #38070b26;color:#fff8e8}
+    .mark{background:linear-gradient(145deg,#f4dda1,#b37b19);color:var(--wine-dark);border:1px solid #ffe8a9;box-shadow:inset 0 1px 0 #fff8}
+    .brand small{color:#e9d5aa}.live{background:#fff1c51c;color:#f4dfb2;border:1px solid #e4bd5b55}.live i{background:#e5c462;box-shadow:0 0 0 4px #f3d67620}
+    .primary{background:linear-gradient(145deg,#edcf77,#bd8522);color:#3f0a0d;box-shadow:0 5px 16px #34080b38;border:1px solid #f5df9b}.primary:hover{background:linear-gradient(145deg,#f3da8b,#cc9631)}
+    .avatar{border-color:#dcb657;background:#fff6dc;color:var(--wine)}
+    .intro h1,.heading h2,.month-toolbar h2{color:var(--wine-dark)}.eyebrow,.label{color:var(--wine)}
+    .ring{background:conic-gradient(var(--gold) var(--p),#e2d2b3 0)}.ring:after{background:#fbf4e5}
+    .view-tabs{background:#e8d8bb;border:1px solid #d6bd8e}.view-tabs button.active{background:var(--wine);color:#fff5df;box-shadow:0 3px 10px #4c0c1129}
+    .status,.room,.list,.month-panel{border-color:#d7bd87;box-shadow:0 10px 28px #4e160d12}
+    .status{background:linear-gradient(128deg,#4a090d,#76151a 68%,#8d2222);color:#fff7e7;border-color:#b9862e}
+    .status-icon{background:linear-gradient(145deg,#f0d37e,#b98022);color:#4a090d;box-shadow:0 0 0 8px #d6a64025}
+    .status .label{color:#edcf78}.status p{color:#eadac2}.counts{border-color:#d4aa5655}.counts i{background:#dfbd63}
+    .room{background:linear-gradient(145deg,#fffaf0,#f4e4c3);color:#4e2418;border-color:#d4b26b}
+    .room.veg{background:linear-gradient(145deg,#fff8ea,#eed8c7);color:#57221d;border-color:#d4aa82}
+    .room-head{justify-content:space-between}.room-title{display:flex;align-items:center;gap:8px;min-width:0}.room-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .room-icon,.veg .room-icon{background:linear-gradient(145deg,#8b1d20,#4f090d);border:1px solid #d0a44e}
+    .room-edit{width:28px;height:28px;border-radius:7px;border:1px solid #cba85d;background:#fff8e8;color:var(--wine);font-size:13px;flex:0 0 auto}.room-edit:hover{background:#f4dfaa}
+    .room-foot span:first-child{color:var(--wine)}
+    .search{background:#fffaf0;border-color:#d7c19a}.segments{background:#e8d8bb}.segments .active{color:#fff6e2;background:var(--wine)}
+    .list{background:#fffaf1}.list-head,.month-head{background:linear-gradient(100deg,#4c090d,#741419);color:#f4ddb0}.device{border-color:#eadcc1}.device:hover{background:#fff5df}.dot,.dot.veg{background:linear-gradient(145deg,#8b1d20,#4f090d);border:1px solid #c79b45}
+    .add{border-color:#cfad68;background:#fff9ea;color:var(--wine)}.checked .box{background:var(--wine);border-color:var(--wine)}
+    .month-panel{background:#fffaf1}.month-toolbar{border-color:#decaa2}.month-summary,.month-empty-note{background:#f4e7cf;border-color:#decaa2}.month-stat{background:#fffaf0;border-color:#dbc398}
+    .month-row{border-color:#eee0c7}.month-row.today{background:#fff2c9}.log-cell{border-color:#d9c8a8;background:#fffaf1}.log-cell.done{border-color:#c7a355;background:#f9edc9;color:#6c1718}
+    footer{color:#82695d}.backdrop{background:#210306b8}.modal{background:#fff8e9;border:1px solid #d1aa58}.close{background:#ead7b2;color:var(--wine)}
+    .modal select,.modal input[type=date],.modal input[type=text],.temp-input{border-color:#d7bf91;background:#fffdf7}.note{background:#f1dfb8;color:var(--wine)}
+    .toast{background:linear-gradient(105deg,#4b090d,#791519);border:1px solid #c99a35}
+    .settings-note{margin:-7px 0 4px;color:var(--muted);font-size:10px;line-height:1.5}
+    @media(max-width:700px){.top .primary{padding:0 11px;font-size:11px}.device{background:#fffaf1}.room-edit{width:34px;height:34px}.month-actions{flex-wrap:wrap}.month-actions>.primary{width:100%}}
   </style>
 </head>
 <body>
@@ -39,11 +70,11 @@
     <div id="dashboardView">
     <section class="overview">
       <article class="status"><div class="status-icon">✓</div><div><span class="label">Gesamtstatus</span><h2 id="headline">2 Geräte brauchen Aufmerksamkeit</h2><p id="summary">8 von 10 Geräten liegen aktuell im vorgesehenen Temperaturbereich.</p></div><div class="counts"><span><i></i><b id="okCount">8</b> in Ordnung</span><span class="warn"><i></i><b id="issueCount">2</b> prüfen</span></div></article>
-      <article class="room beer"><div class="room-head"><span class="room-icon">B</span>BIERKÜHLHAUS</div><strong>3,2 °C</strong><p>5 Kühlschränke</p><div class="room-foot"><span><i></i> 4 stabil</span><span>Ø heute</span></div></article>
-      <article class="room veg"><div class="room-head"><span class="room-icon">G</span>GEMÜSEKÜHLHAUS</div><strong>5,3 °C</strong><p>5 Kühlschränke</p><div class="room-foot"><span><i></i> 4 stabil</span><span>Ø heute</span></div></article>
+      <article class="room beer"><div class="room-head"><span class="room-title"><span class="room-icon" id="beerInitial">B</span><span class="room-name" id="beerRoomName">BIERKÜHLHAUS</span></span><button class="room-edit" data-edit-room="beer" aria-label="Namen des Bierkühlhauses bearbeiten">✎</button></div><strong>3,2 °C</strong><p>5 Kühlschränke</p><div class="room-foot"><span><i></i> 4 stabil</span><span>Ø heute</span></div></article>
+      <article class="room veg"><div class="room-head"><span class="room-title"><span class="room-icon" id="vegInitial">G</span><span class="room-name" id="vegRoomName">GEMÜSEKÜHLHAUS</span></span><button class="room-edit" data-edit-room="veg" aria-label="Namen des Gemüsekühlhauses bearbeiten">✎</button></div><strong>5,3 °C</strong><p>5 Kühlschränke</p><div class="room-foot"><span><i></i> 4 stabil</span><span>Ø heute</span></div></article>
     </section>
     <section>
-      <div class="heading"><div><h2>Alle Kühlgeräte</h2><p>Letzte Messwerte und Tageskontrolle</p></div><div class="filters"><label class="search">⌕ <input id="search" placeholder="Gerät suchen …" aria-label="Gerät suchen"></label><div class="segments"><button class="active" data-room="Alle">Alle</button><button data-room="Bierkühlhaus">Bier</button><button data-room="Gemüsekühlhaus">Gemüse</button></div></div></div>
+      <div class="heading"><div><h2>Alle Kühlgeräte</h2><p>Letzte Messwerte und Tageskontrolle</p></div><div class="filters"><label class="search">⌕ <input id="search" placeholder="Gerät suchen …" aria-label="Gerät suchen"></label><div class="segments"><button class="active" data-room="Alle">Alle</button><button id="beerFilter" data-room="Bierkühlhaus">Bier</button><button id="vegFilter" data-room="Gemüsekühlhaus">Gemüse</button></div></div></div>
       <div class="list"><div class="list-head"><span>GERÄT</span><span>AKTUELL</span><span>SOLLBEREICH</span><span>VERLAUF</span><span>KONTROLLE</span><span></span></div><div id="devices"></div></div>
     </section>
     </div>
@@ -58,6 +89,7 @@
     <footer><span>● Daten werden nur auf diesem Gerät gespeichert</span><span>Kühlblick · HACCP-Tageskontrolle</span></footer>
   </main>
   <div class="backdrop" id="backdrop"><section class="modal" role="dialog" aria-modal="true"><button class="close" id="close" aria-label="Dialog schließen">×</button><p class="eyebrow">NEUE MESSUNG</p><h2>Temperatur erfassen</h2><p>Messwert auswählen, prüfen und direkt dokumentieren.</p><form id="form"><label>Datum<input type="date" id="entryDate" required></label><label>Kühlgerät<select id="select"></select></label><label>Gemessene Temperatur<div class="temp-input"><input id="temperature" inputmode="decimal" required aria-label="Gemessene Temperatur"><span>°C</span></div></label><div class="note" id="rangeNote"></div><button class="primary save" type="submit">Messung speichern</button></form></section></div>
+  <div class="backdrop" id="roomBackdrop"><section class="modal" role="dialog" aria-modal="true" aria-labelledby="roomDialogTitle"><button class="close" id="roomClose" aria-label="Dialog schließen">×</button><p class="eyebrow">BEZEICHNUNGEN</p><h2 id="roomDialogTitle">Kühlhäuser benennen</h2><p>Die neuen Namen erscheinen in der Übersicht, den Filtern und bei allen Kühlgeräten.</p><form id="roomForm"><label>Erstes Kühlhaus<input type="text" id="beerRoomInput" maxlength="40" required></label><label>Zweites Kühlhaus<input type="text" id="vegRoomInput" maxlength="40" required></label><p class="settings-note">Die Zuordnung der vorhandenen Kühlschränke bleibt dabei unverändert.</p><button class="primary save" type="submit">Namen speichern</button></form></section></div>
   <div class="toast" id="toast">✓ Temperatur wurde gespeichert.</div>
   <script>
     const defaults=[
@@ -74,15 +106,24 @@
     ];
     let devices;try{devices=JSON.parse(localStorage.getItem("kuehlblick-devices"))||defaults}catch(e){devices=defaults}
     let monthLog;try{monthLog=JSON.parse(localStorage.getItem("kuehlblick-month-log"))||{}}catch(e){monthLog={}}
+    const roomDefaults={beer:"Bierkühlhaus",veg:"Gemüsekühlhaus"};
+    let roomNames;try{roomNames={...roomDefaults,...JSON.parse(localStorage.getItem("kuehlblick-room-names"))}}catch(e){roomNames={...roomDefaults}}
     const localKey=d=>{const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,"0"),day=String(d.getDate()).padStart(2,"0");return `${y}-${m}-${day}`};
     const todayKey=localKey(new Date());
     let room="Alle",selected=1,selectedMonth=todayKey.slice(0,7),activeView="dashboard";
     const $=s=>document.querySelector(s),status=d=>d.value>d.max+1||d.value<d.min-1?"critical":d.value>d.max||d.value<d.min?"warning":"ok";
+    const roomKey=r=>r==="Gemüsekühlhaus"?"veg":"beer",displayRoom=r=>roomNames[roomKey(r)],esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
     const names={ok:"In Ordnung",warning:"Zu warm",critical:"Kritisch"};
-    function persist(){localStorage.setItem("kuehlblick-devices",JSON.stringify(devices));localStorage.setItem("kuehlblick-month-log",JSON.stringify(monthLog))}
+    function persist(){localStorage.setItem("kuehlblick-devices",JSON.stringify(devices));localStorage.setItem("kuehlblick-month-log",JSON.stringify(monthLog));localStorage.setItem("kuehlblick-room-names",JSON.stringify(roomNames))}
+    function renderRoomNames(){
+      $("#beerRoomName").textContent=roomNames.beer.toUpperCase();$("#vegRoomName").textContent=roomNames.veg.toUpperCase();
+      $("#beerInitial").textContent=roomNames.beer.trim().charAt(0).toUpperCase()||"B";$("#vegInitial").textContent=roomNames.veg.trim().charAt(0).toUpperCase()||"G";
+      $("#beerFilter").textContent=roomNames.beer;$("#vegFilter").textContent=roomNames.veg;
+    }
     function render(){
-      const q=$("#search").value.toLowerCase(),visible=devices.filter(d=>(room==="Alle"||d.room===room)&&(d.name+" "+d.code).toLowerCase().includes(q));
-      $("#devices").innerHTML=visible.length?visible.map(d=>{const s=status(d),mn=Math.min(...d.h),mx=Math.max(...d.h);return `<article class="device"><div class="name"><span class="dot ${d.room==="Gemüsekühlhaus"?"veg":""}">${d.room[0]}</span><div><strong>${d.name}</strong><small>${d.code} · ${d.room}</small></div></div><div class="temp ${s}"><strong>${d.value.toFixed(1).replace(".",",")}°</strong><span><i></i>${names[s]}</span></div><div class="range">${d.min}–${d.max} °C</div><div class="bars ${s}" aria-label="Temperaturverlauf">${d.h.map(v=>`<i style="height:${8+(v-mn)/(mx-mn+.1)*20}px"></i>`).join("")}</div><button class="check ${d.checked?"checked":""}" data-check="${d.id}"><span class="box">${d.checked?"✓":""}</span><span><strong>${d.checked?"Geprüft":"Noch offen"}</strong><small>${d.time}</small></span></button><button class="add" data-add="${d.id}" aria-label="Temperatur für ${d.name} erfassen">＋</button></article>`}).join(""):`<div class="empty">Kein Kühlgerät passt zu deiner Suche.</div>`;
+      renderRoomNames();
+      const q=$("#search").value.toLowerCase(),visible=devices.filter(d=>(room==="Alle"||d.room===room)&&(d.name+" "+d.code+" "+displayRoom(d.room)).toLowerCase().includes(q));
+      $("#devices").innerHTML=visible.length?visible.map(d=>{const s=status(d),mn=Math.min(...d.h),mx=Math.max(...d.h),shownRoom=displayRoom(d.room);return `<article class="device"><div class="name"><span class="dot ${d.room==="Gemüsekühlhaus"?"veg":""}">${esc(shownRoom.trim().charAt(0).toUpperCase()||d.room[0])}</span><div><strong>${esc(d.name)}</strong><small>${esc(d.code)} · ${esc(shownRoom)}</small></div></div><div class="temp ${s}"><strong>${d.value.toFixed(1).replace(".",",")}°</strong><span><i></i>${names[s]}</span></div><div class="range">${d.min}–${d.max} °C</div><div class="bars ${s}" aria-label="Temperaturverlauf">${d.h.map(v=>`<i style="height:${8+(v-mn)/(mx-mn+.1)*20}px"></i>`).join("")}</div><button class="check ${d.checked?"checked":""}" data-check="${d.id}"><span class="box">${d.checked?"✓":""}</span><span><strong>${d.checked?"Geprüft":"Noch offen"}</strong><small>${d.time}</small></span></button><button class="add" data-add="${d.id}" aria-label="Temperatur für ${esc(d.name)} erfassen">＋</button></article>`}).join(""):`<div class="empty">Kein Kühlgerät passt zu deiner Suche.</div>`;
       const checked=devices.filter(d=>d.checked).length,ok=devices.filter(d=>status(d)==="ok").length,issues=10-ok;
       $("#checked").textContent=checked;$("#openCount").textContent=checked===10?"Vollständig erledigt":`${10-checked} Messungen offen`;$("#ring").style.setProperty("--p",checked*10+"%");
       $("#okCount").textContent=ok;$("#issueCount").textContent=issues;$("#headline").textContent=issues?`${issues} Geräte brauchen Aufmerksamkeit`:"Alles im grünen Bereich";$("#summary").textContent=`${ok} von 10 Geräten liegen aktuell im vorgesehenen Temperaturbereich.`;
@@ -107,6 +148,9 @@
     $("#prevMonth").onclick=()=>moveMonth(-1);$("#nextMonth").onclick=()=>moveMonth(1);
     $("#takeToday").onclick=()=>{monthLog[todayKey]??={};devices.filter(d=>d.checked).forEach(d=>monthLog[todayKey][d.id]={value:d.value,time:"Übernommen"});persist();selectedMonth=todayKey.slice(0,7);renderMonth();$("#toast").textContent=`✓ ${Object.keys(monthLog[todayKey]).length} heutige Werte dokumentiert.`;$("#toast").classList.add("show");setTimeout(()=>$("#toast").classList.remove("show"),2500)};
     $("#capture").onclick=()=>openModal(1);$("#close").onclick=()=>$("#backdrop").classList.remove("open");$("#backdrop").onclick=e=>{if(e.target.id==="backdrop")$("#backdrop").classList.remove("open")};
+    document.querySelectorAll("[data-edit-room]").forEach(b=>b.onclick=()=>{$("#beerRoomInput").value=roomNames.beer;$("#vegRoomInput").value=roomNames.veg;$("#roomBackdrop").classList.add("open");$(`#${b.dataset.editRoom}RoomInput`).focus()});
+    $("#roomClose").onclick=()=>$("#roomBackdrop").classList.remove("open");$("#roomBackdrop").onclick=e=>{if(e.target.id==="roomBackdrop")$("#roomBackdrop").classList.remove("open")};
+    $("#roomForm").onsubmit=e=>{e.preventDefault();const beer=$("#beerRoomInput").value.trim(),veg=$("#vegRoomInput").value.trim();if(!beer||!veg)return;roomNames={beer,veg};persist();render();$("#roomBackdrop").classList.remove("open");$("#toast").textContent="✓ Kühlhaus-Namen wurden gespeichert.";$("#toast").classList.add("show");setTimeout(()=>$("#toast").classList.remove("show"),2500)};
     $("#select").onchange=e=>openModal(+e.target.value,$("#entryDate").value||todayKey);
     $("#form").onsubmit=e=>{e.preventDefault();const v=Number($("#temperature").value.replace(",",".")),date=$("#entryDate").value;if(!Number.isFinite(v)||v< -10||v>30||!date)return;monthLog[date]??={};monthLog[date][selected]={value:v,time:new Date().toLocaleTimeString("de-DE",{hour:"2-digit",minute:"2-digit"})};const d=devices.find(x=>x.id===selected);if(date===todayKey){d.value=v;d.checked=true;d.time="Soeben";d.h=[...d.h.slice(-5),v]}persist();render();renderMonth();$("#backdrop").classList.remove("open");$("#toast").textContent="✓ Temperatur wurde gespeichert.";$("#toast").classList.add("show");setTimeout(()=>$("#toast").classList.remove("show"),2500)};
     render();renderMonth();
