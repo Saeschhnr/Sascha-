@@ -4,13 +4,13 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#5b0d12">
-  <title>Kühlblick · Temperaturkontrolle</title>
+  <title>Restaurant Esteban · Temperaturkontrolle</title>
   <meta name="description" content="Temperaturkontrolle für zwei Kühlhäuser und zehn Kühlgeräte.">
   <style>
     :root{--ink:#351915;--muted:#7b665b;--line:#d8c49b;--green:#28704d;--dark:#681116;--soft:#fbf2dc;--amber:#b8751e;--red:#b4312f;--beer:#b98424;--veg:#8f492d;--wine:#681116;--wine-dark:#35080b;--gold:#c99a35;--gold-light:#f1d88a;--cream:#fbf5e8}
     *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:#f6f7f5;color:var(--ink);font-family:Arial,Helvetica,sans-serif;-webkit-font-smoothing:antialiased}button,input,select{font:inherit}button{color:inherit;cursor:pointer}
     .top{height:76px;display:flex;align-items:center;justify-content:space-between;padding:0 42px;border-bottom:1px solid var(--line);background:#ffffffee;position:sticky;top:0;z-index:20;backdrop-filter:blur(12px)}
-    .brand{display:flex;align-items:center;gap:12px}.mark{width:38px;height:38px;border-radius:11px;background:var(--dark);color:#fff;display:grid;place-items:center;font:700 27px Georgia}.brand strong{display:block;font:700 20px Georgia}.brand small{display:block;margin-top:4px;color:var(--muted);font-size:10px;letter-spacing:.08em;text-transform:uppercase}
+    .brand{display:flex;align-items:center;gap:12px}.mark{width:44px;height:44px;display:grid;place-items:center;flex:0 0 44px}.mark img{display:block;width:100%;height:100%;object-fit:contain}.brand strong{display:block;font:700 20px Georgia}.brand small{display:block;margin-top:4px;color:var(--muted);font-size:10px;letter-spacing:.08em;text-transform:uppercase}
     .actions{display:flex;align-items:center;gap:12px}.live{display:flex;align-items:center;gap:7px;padding:8px 12px;border-radius:99px;background:#f3f6f4;color:#526159;font-size:12px}.live i{width:7px;height:7px;border-radius:50%;background:#4a9d6f;box-shadow:0 0 0 4px #ddede3}.primary{height:40px;border:0;border-radius:9px;background:var(--dark);color:#fff;padding:0 16px;font-weight:700;font-size:13px;box-shadow:0 5px 16px #164e3829}.primary:hover{background:#0f3f2c}.avatar{width:40px;height:40px;border:1px solid #d7dfda;border-radius:50%;background:#fff;color:var(--dark);font-weight:800;font-size:12px}
     .page{max-width:1360px;margin:auto;padding:40px 42px 24px}.intro{display:flex;justify-content:space-between;align-items:center;margin-bottom:28px}.eyebrow{color:var(--green);font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;margin:0 0 9px}.intro h1{margin:0;font:700 38px/1.12 Georgia;letter-spacing:-.035em}.intro p:last-child{color:var(--muted);margin:8px 0 0;font-size:14px}
     .progress{display:flex;align-items:center;gap:13px}.ring{--p:70%;width:58px;height:58px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(var(--green) var(--p),#dce5df 0);position:relative}.ring:after{content:"";position:absolute;inset:5px;border-radius:50%;background:#f6f7f5}.ring b{z-index:1;font-size:17px}.ring small{color:var(--muted);font-size:10px}.progress strong,.progress span{display:block}.progress strong{font-size:13px;margin-bottom:5px}.progress span{color:var(--muted);font-size:11px}
@@ -27,7 +27,7 @@
       radial-gradient(circle at 8% 0%,#efd99f55 0,transparent 28%),
       linear-gradient(180deg,#fbf4e5 0,#f5ead7 100%);min-height:100vh}
     .top{background:linear-gradient(105deg,var(--wine-dark),var(--wine) 58%,#861b1f);border-bottom:2px solid var(--gold);box-shadow:0 8px 28px #38070b26;color:#fff8e8}
-    .mark{background:linear-gradient(145deg,#f4dda1,#b37b19);color:var(--wine-dark);border:1px solid #ffe8a9;box-shadow:inset 0 1px 0 #fff8}
+    .mark{filter:drop-shadow(0 3px 5px #21030666)}
     .brand small{color:#e9d5aa}.live{background:#fff1c51c;color:#f4dfb2;border:1px solid #e4bd5b55}.live i{background:#e5c462;box-shadow:0 0 0 4px #f3d67620}
     .primary{background:linear-gradient(145deg,#edcf77,#bd8522);color:#3f0a0d;box-shadow:0 5px 16px #34080b38;border:1px solid #f5df9b}.primary:hover{background:linear-gradient(145deg,#f3da8b,#cc9631)}
     .avatar{border-color:#dcb657;background:#fff6dc;color:var(--wine)}
@@ -59,12 +59,12 @@
 </head>
 <body>
   <header class="top">
-    <div class="brand"><span class="mark">°</span><span><strong>Kühlblick</strong><small>Restaurant · Temperaturkontrolle</small></span></div>
+    <div class="brand"><span class="mark"><img src="esteban-emblem.png" alt="Wappen des Restaurant Esteban"></span><span><strong>Restaurant Esteban</strong><small>Temperaturkontrolle</small></span></div>
     <div class="actions"><span class="live"><i></i>Live-Übersicht</span><button class="primary" id="capture">＋ Temperatur erfassen</button><button class="avatar">SH</button></div>
   </header>
   <main class="page">
     <section class="intro">
-      <div><p class="eyebrow" id="date"></p><h1>Guten Morgen, Sascha.</h1><p>Hier ist der aktuelle Kühlstatus deines Restaurants.</p></div>
+      <div><p class="eyebrow" id="date"></p><h1>Temperaturkontrolle Esteban</h1><p>Alle Kühlhäuser und Tageswerte auf einen Blick.</p></div>
       <div class="progress"><div class="ring" id="ring"><b><span id="checked">7</span><small>/10</small></b></div><div><strong>Tageskontrolle</strong><span id="openCount">3 Messungen offen</span></div></div>
     </section>
     <nav class="view-tabs" aria-label="Ansicht wechseln"><button class="active" data-view="dashboard">Übersicht</button><button data-view="month">Monatsliste</button></nav>
@@ -87,7 +87,7 @@
         <div class="month-empty-note">Tipp: Klicke auf ein Feld, um einen Wert für das Gerät und den jeweiligen Tag einzutragen.</div>
       </div>
     </section>
-    <footer><span>● Daten werden nur auf diesem Gerät gespeichert</span><span>Kühlblick · HACCP-Tageskontrolle</span></footer>
+    <footer><span>● Daten werden nur auf diesem Gerät gespeichert</span><span>Restaurant Esteban · HACCP-Tageskontrolle</span></footer>
   </main>
   <div class="backdrop" id="backdrop"><section class="modal" role="dialog" aria-modal="true"><button class="close" id="close" aria-label="Dialog schließen">×</button><p class="eyebrow">NEUE MESSUNG</p><h2>Temperatur erfassen</h2><p>Messwert auswählen, prüfen und direkt dokumentieren.</p><form id="form"><label>Datum<input type="date" id="entryDate" required></label><label>Kühlgerät<select id="select"></select></label><label>Gemessene Temperatur<div class="temp-input"><input id="temperature" inputmode="decimal" required aria-label="Gemessene Temperatur"><span>°C</span></div></label><div class="note" id="rangeNote"></div><button class="primary save" type="submit">Messung speichern</button></form></section></div>
   <div class="backdrop" id="roomBackdrop"><section class="modal" role="dialog" aria-modal="true" aria-labelledby="roomDialogTitle"><button class="close" id="roomClose" aria-label="Dialog schließen">×</button><p class="eyebrow">BEZEICHNUNGEN</p><h2 id="roomDialogTitle">Kühlhäuser benennen</h2><p>Die neuen Namen erscheinen in der Übersicht, den Filtern und bei allen Kühlgeräten.</p><form id="roomForm"><label>Erstes Kühlhaus<input type="text" id="beerRoomInput" maxlength="40" required></label><label>Zweites Kühlhaus<input type="text" id="vegRoomInput" maxlength="40" required></label><p class="settings-note">Die Zuordnung der vorhandenen Kühlschränke bleibt dabei unverändert.</p><button class="primary save" type="submit">Namen speichern</button></form></section></div>
